@@ -32,7 +32,7 @@ func NewSASLConfig() SASLConfig {
 }
 
 // SASLFieldSpec returns specs for SASL fields.
-func SASLFieldSpec() docs.FieldSpec {
+func SASLFieldSpec() *docs.FieldSpec {
 	return docs.FieldObject("sasl", "Enables SASL authentication.").WithChildren(
 		docs.FieldString("mechanism", "The SASL authentication mechanism to use.").HasAnnotatedOptions(
 			"none", "No SASL based authentication.",

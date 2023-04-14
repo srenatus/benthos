@@ -19,7 +19,7 @@ import (
 // ConfigField describes a field within a component configuration, to be added
 // to a ConfigSpec.
 type ConfigField struct {
-	field docs.FieldSpec
+	field *docs.FieldSpec
 }
 
 // NewAnyField describes a new config field that can assume any value type
@@ -148,7 +148,7 @@ func NewBoolField(name string) *ConfigField {
 // NewObjectField describes a new object type config field, consisting of one
 // or more child fields.
 func NewObjectField(name string, fields ...*ConfigField) *ConfigField {
-	children := make([]docs.FieldSpec, len(fields))
+	children := make([]*docs.FieldSpec, len(fields))
 	for i, f := range fields {
 		children[i] = f.field
 	}
@@ -168,7 +168,7 @@ func NewObjectListField(name string, fields ...*ConfigField) *ConfigField {
 
 // NewInternalField returns a ConfigField derived from an internal package field
 // spec. This function is for internal use only.
-func NewInternalField(ifield docs.FieldSpec) *ConfigField {
+func NewInternalField(ifield *docs.FieldSpec) *ConfigField {
 	return &ConfigField{
 		field: ifield,
 	}

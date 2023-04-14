@@ -36,7 +36,7 @@ func (w *Will) Validate() error {
 }
 
 // WillFieldSpec defines a last will message registration.
-func WillFieldSpec() docs.FieldSpec {
+func WillFieldSpec() *docs.FieldSpec {
 	return docs.FieldObject(
 		"will", "Set last will message in case of Benthos failure",
 	).WithChildren(

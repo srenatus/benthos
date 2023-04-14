@@ -104,7 +104,7 @@ Unfortunately this error message will appear for a wide range of connection prob
 			).Advanced(),
 			docs.FieldInt("fetch_buffer_cap", "The maximum number of unprocessed messages to fetch at a given time.").Advanced(),
 			docs.FieldBool("multi_header", "Decode headers into lists to allow handling of multiple values with the same key").Advanced(),
-			func() docs.FieldSpec {
+			func() *docs.FieldSpec {
 				b := policy.FieldSpec()
 				b.IsAdvanced = true
 				return b

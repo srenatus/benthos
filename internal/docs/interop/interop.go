@@ -12,8 +12,8 @@ import (
 //
 // In these cases we want the canonical spec to be made with the service package
 // but still extract a docs.FieldSpec from it.
-func Unwrap(f *service.ConfigField) docs.FieldSpec {
+func Unwrap(f *service.ConfigField) *docs.FieldSpec {
 	return f.XUnwrapper().(interface {
-		Unwrap() docs.FieldSpec
+		Unwrap() *docs.FieldSpec
 	}).Unwrap()
 }

@@ -99,7 +99,7 @@ type ComponentSpec struct {
 	Examples []AnnotatedExample `json:"examples,omitempty"`
 
 	// A summary of each field in the component configuration.
-	Config FieldSpec `json:"config"`
+	Config *FieldSpec `json:"config"`
 
 	// Version is the Benthos version this component was introduced.
 	Version string `json:"version,omitempty"`

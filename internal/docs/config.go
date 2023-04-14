@@ -61,8 +61,8 @@ var labelField = FieldString(
 }).HasDefault("")
 
 // ReservedFieldsByType returns a map of fields for a specific type.
-func ReservedFieldsByType(t Type) map[string]FieldSpec {
-	m := map[string]FieldSpec{
+func ReservedFieldsByType(t Type) map[string]*FieldSpec {
+	m := map[string]*FieldSpec{
 		"type":   FieldString("type", ""),
 		"plugin": FieldObject("plugin", ""),
 	}

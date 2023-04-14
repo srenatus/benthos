@@ -39,7 +39,7 @@ func (conf CORSConfig) WrapHandler(handler http.Handler) (http.Handler, error) {
 }
 
 // ServerCORSFieldSpec returns a field spec for an http server CORS component.
-func ServerCORSFieldSpec() docs.FieldSpec {
+func ServerCORSFieldSpec() *docs.FieldSpec {
 	return docs.FieldObject("cors", "Adds Cross-Origin Resource Sharing headers.").WithChildren(
 		docs.FieldBool("enabled", "Whether to allow CORS requests.").HasDefault(false),
 		docs.FieldString("allowed_origins", "An explicit list of origins that are allowed for CORS requests.").Array().HasDefault([]string{}),

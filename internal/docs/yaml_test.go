@@ -595,7 +595,7 @@ baz: [[true,false],[true]]
 func TestFieldToNode(t *testing.T) {
 	tests := []struct {
 		name     string
-		spec     docs.FieldSpec
+		spec     *docs.FieldSpec
 		recurse  bool
 		expected string
 	}{
@@ -1031,7 +1031,7 @@ testlintfooinput:
 func TestYAMLLinting(t *testing.T) {
 	type testCase struct {
 		name      string
-		inputSpec docs.FieldSpec
+		inputSpec *docs.FieldSpec
 		inputConf string
 
 		res []docs.Lint
@@ -1154,7 +1154,7 @@ func TestYAMLSanitation(t *testing.T) {
 		name        string
 		inputType   docs.Type
 		inputConf   string
-		inputFilter func(f docs.FieldSpec) bool
+		inputFilter func(f *docs.FieldSpec) bool
 
 		res string
 		err string

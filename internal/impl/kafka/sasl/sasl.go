@@ -22,7 +22,7 @@ func NewConfig() Config {
 }
 
 // FieldSpec returns specs for SASL fields.
-func FieldSpec() docs.FieldSpec {
+func FieldSpec() *docs.FieldSpec {
 	return docs.FieldObject("sasl", "Enables SASL authentication.").WithChildren(
 		docs.FieldString("mechanism", "The SASL authentication mechanism, if left empty SASL authentication is not used. Warning: SCRAM based methods within Benthos have not received a security audit.").HasAnnotatedOptions(
 			"none", "Default, no SASL authentication.",

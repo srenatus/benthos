@@ -16,7 +16,7 @@ import (
 // ConfigField returns a public API config field spec for an HTTP component,
 // with optional extra fields added to the end.
 func ConfigField(defaultVerb string, forOutput bool, extraChildren ...*service.ConfigField) *service.ConfigField {
-	extraOldStyle := make([]docs.FieldSpec, len(extraChildren))
+	extraOldStyle := make([]*docs.FieldSpec, len(extraChildren))
 	for i, v := range extraChildren {
 		extraOldStyle[i] = interop.Unwrap(v)
 	}
@@ -26,7 +26,7 @@ func ConfigField(defaultVerb string, forOutput bool, extraChildren ...*service.C
 }
 
 // OldFieldSpec returns a field spec for an http client component.
-func OldFieldSpec(defaultVerb string, forOutput bool, extraChildren ...docs.FieldSpec) docs.FieldSpec {
+func OldFieldSpec(defaultVerb string, forOutput bool, extraChildren ...*docs.FieldSpec) *docs.FieldSpec {
 	httpSpecs := docs.FieldSpecs{
 		docs.FieldURL("url", "The URL to connect to.").IsInterpolated(),
 		docs.FieldString("verb", "A verb to connect with", "POST", "GET", "DELETE").HasDefault(defaultVerb),

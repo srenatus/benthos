@@ -92,7 +92,7 @@ func (f FieldSpecs) SetYAMLPath(docsProvider Provider, root, value *yaml.Node, p
 	root = unwrapDocumentNode(root)
 	value = unwrapDocumentNode(value)
 
-	var foundSpec FieldSpec
+	var foundSpec *FieldSpec
 	for _, spec := range f {
 		if spec.Name == path[0] {
 			foundSpec = spec
@@ -142,7 +142,7 @@ func setYAMLPathCore(docsProvider Provider, coreType Type, root, value *yaml.Nod
 
 // SetYAMLPath sets the value of a node within a YAML document identified by a
 // path to a value.
-func (f FieldSpec) SetYAMLPath(docsProvider Provider, root, value *yaml.Node, path ...string) error {
+func (f *FieldSpec) SetYAMLPath(docsProvider Provider, root, value *yaml.Node, path ...string) error {
 	root = unwrapDocumentNode(root)
 	value = unwrapDocumentNode(value)
 
@@ -234,30 +234,30 @@ func (f FieldSpec) SetYAMLPath(docsProvider Provider, root, value *yaml.Node, pa
 
 // GetDocsForPath attempts to find the documentation for a given node of a
 // config identified by a path.
-func (f FieldSpecs) GetDocsForPath(docsProvider Provider, path ...string) (FieldSpec, error) {
+func (f FieldSpecs) GetDocsForPath(docsProvider Provider, path ...string) (*FieldSpec, error) {
 	target := path[0]
 	for _, spec := range f {
 		if spec.Name == target {
 			return spec.GetDocsForPath(docsProvider, path[1:]...)
 		}
 	}
-	return FieldSpec{}, fmt.Errorf("%v: field not recognised", path[0])
+	return nil, fmt.Errorf("%v: field not recognised", path[0])
 }
 
-func getDocsForPathCore(docsProvider Provider, coreType Type, path ...string) (FieldSpec, error) {
+func getDocsForPathCore(docsProvider Provider, coreType Type, path ...string) (*FieldSpec, error) {
 	if f, exists := ReservedFieldsByType(coreType)[path[0]]; exists {
 		return f.GetDocsForPath(docsProvider, path[1:]...)
 	}
 	cSpec, exists := docsProvider.GetDocs(path[0], coreType)
 	if !exists {
-		return FieldSpec{}, fmt.Errorf("%v: field not recognised", path[0])
+		return nil, fmt.Errorf("%v: field not recognised", path[0])
 	}
 	return cSpec.Config.GetDocsForPath(docsProvider, path[1:]...)
 }
 
 // GetDocsForPath attempts to find the documentation for a given node of a
 // config identified by a path.
-func (f FieldSpec) GetDocsForPath(docsProvider Provider, path ...string) (FieldSpec, error) {
+func (f *FieldSpec) GetDocsForPath(docsProvider Provider, path ...string) (*FieldSpec, error) {
 	if len(path) == 0 {
 		return f, nil
 	}
@@ -273,7 +273,7 @@ func (f FieldSpec) GetDocsForPath(docsProvider Provider, path ...string) (FieldS
 	if len(f.Children) > 0 {
 		return f.Children.GetDocsForPath(docsProvider, path...)
 	}
-	return FieldSpec{}, fmt.Errorf("%v: field not recognised", path[0])
+	return nil, fmt.Errorf("%v: field not recognised", path[0])
 }
 
 // GetYAMLPath attempts to obtain a specific value within a YAML tree by
@@ -314,7 +314,7 @@ func GetYAMLPath(root *yaml.Node, path ...string) (*yaml.Node, error) {
 func (f FieldSpecs) YAMLLabelsToPaths(docsProvider Provider, node *yaml.Node, labelsToPaths map[string][]string, path []string) {
 	node = unwrapDocumentNode(node)
 
-	fieldMap := map[string]FieldSpec{}
+	fieldMap := map[string]*FieldSpec{}
 	for _, spec := range f {
 		fieldMap[spec.Name] = spec
 	}

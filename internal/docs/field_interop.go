@@ -43,7 +43,7 @@ func FieldsFromConf(conf any) FieldSpecs {
 // struct.
 //
 // TODO: V5 Remove this eventually.
-func (f FieldSpec) ChildDefaultAndTypesFromStruct(conf any) FieldSpec {
+func (f *FieldSpec) ChildDefaultAndTypesFromStruct(conf any) *FieldSpec {
 	var node yaml.Node
 	if err := node.Encode(conf); err != nil {
 		return f
@@ -54,7 +54,7 @@ func (f FieldSpec) ChildDefaultAndTypesFromStruct(conf any) FieldSpec {
 
 // DefaultAndTypeFrom enriches a field spec with a type string and default value
 // from another field spec.
-func (f FieldSpec) DefaultAndTypeFrom(from FieldSpec) FieldSpec {
+func (f *FieldSpec) DefaultAndTypeFrom(from *FieldSpec) *FieldSpec {
 	if f.Default == nil && from.Default != nil {
 		f.Default = from.Default
 	}
@@ -69,7 +69,7 @@ func (f FieldSpec) DefaultAndTypeFrom(from FieldSpec) FieldSpec {
 // from another field spec.
 func (f FieldSpecs) DefaultAndTypeFrom(from FieldSpecs) FieldSpecs {
 	newSpecs := make(FieldSpecs, len(f))
-	fromMap := map[string]FieldSpec{}
+	fromMap := map[string]*FieldSpec{}
 	for _, v := range from {
 		fromMap[v.Name] = v
 	}

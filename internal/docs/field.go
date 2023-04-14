@@ -137,26 +137,26 @@ type FieldSpec struct {
 }
 
 // IsInterpolated indicates that the field supports interpolation functions.
-func (f FieldSpec) IsInterpolated() FieldSpec {
+func (f *FieldSpec) IsInterpolated() *FieldSpec {
 	f.Interpolated = true
 	return f
 }
 
 // IsBloblang indicates that the field is a Bloblang mapping.
-func (f FieldSpec) IsBloblang() FieldSpec {
+func (f *FieldSpec) IsBloblang() *FieldSpec {
 	f.Bloblang = true
 	return f
 }
 
 // HasType returns a new FieldSpec that specifies a specific type.
-func (f FieldSpec) HasType(t FieldType) FieldSpec {
+func (f *FieldSpec) HasType(t FieldType) *FieldSpec {
 	f.Type = t
 	return f
 }
 
 // Optional marks this field as being optional, and therefore its absence in a
 // config is not considered an error even when a default value is not provided.
-func (f FieldSpec) Optional() FieldSpec {
+func (f *FieldSpec) Optional() *FieldSpec {
 	f.IsOptional = true
 	return f
 }
@@ -166,7 +166,7 @@ const bloblREEnvVar = "\\${[0-9A-Za-z_.]+(:((\\${[^}]+})|[^}])+)?}"
 // Secret marks this field as being a secret, which means it represents
 // information that is generally considered sensitive such as passwords or
 // access tokens.
-func (f FieldSpec) Secret() FieldSpec {
+func (f *FieldSpec) Secret() *FieldSpec {
 	f.IsSecret = true
 	f.Scrubber = fmt.Sprintf(`root = if this != "" && !this.trim().re_match("""^%v$""") {
   "!!!SECRET_SCRUBBED!!!"
@@ -175,7 +175,7 @@ func (f FieldSpec) Secret() FieldSpec {
 }
 
 // Advanced marks this field as being advanced, and therefore not commonly used.
-func (f FieldSpec) Advanced() FieldSpec {
+func (f *FieldSpec) Advanced() *FieldSpec {
 	f.IsAdvanced = true
 	for i, v := range f.Children {
 		f.Children[i] = v.Advanced()
@@ -184,7 +184,7 @@ func (f FieldSpec) Advanced() FieldSpec {
 }
 
 // Deprecated marks this field as being deprecated.
-func (f FieldSpec) Deprecated() FieldSpec {
+func (f *FieldSpec) Deprecated() *FieldSpec {
 	f.IsDeprecated = true
 	for i, v := range f.Children {
 		f.Children[i] = v.Deprecated()
@@ -193,45 +193,45 @@ func (f FieldSpec) Deprecated() FieldSpec {
 }
 
 // Array determines that this field is an array of the field type.
-func (f FieldSpec) Array() FieldSpec {
+func (f *FieldSpec) Array() *FieldSpec {
 	f.Kind = KindArray
 	return f
 }
 
 // ArrayOfArrays determines that this is an array of arrays of the field type.
-func (f FieldSpec) ArrayOfArrays() FieldSpec {
+func (f *FieldSpec) ArrayOfArrays() *FieldSpec {
 	f.Kind = Kind2DArray
 	return f
 }
 
 // Map determines that this field is a map of arbitrary keys to a field type.
-func (f FieldSpec) Map() FieldSpec {
+func (f *FieldSpec) Map() *FieldSpec {
 	f.Kind = KindMap
 	return f
 }
 
 // Scalar determines that this field is a scalar type (the default).
-func (f FieldSpec) Scalar() FieldSpec {
+func (f *FieldSpec) Scalar() *FieldSpec {
 	f.Kind = KindScalar
 	return f
 }
 
 // HasDefault returns a new FieldSpec that specifies a default value.
-func (f FieldSpec) HasDefault(v any) FieldSpec {
+func (f *FieldSpec) HasDefault(v any) *FieldSpec {
 	f.Default = &v
 	return f
 }
 
 // AtVersion specifies the version at which this fields behaviour was last
 // modified.
-func (f FieldSpec) AtVersion(v string) FieldSpec {
+func (f *FieldSpec) AtVersion(v string) *FieldSpec {
 	f.Version = v
 	return f
 }
 
 // HasAnnotatedOptions returns a new FieldSpec that specifies a specific list of
 // annotated options. Either.
-func (f FieldSpec) HasAnnotatedOptions(options ...string) FieldSpec {
+func (f *FieldSpec) HasAnnotatedOptions(options ...string) *FieldSpec {
 	if len(f.Options) > 0 {
 		panic("cannot combine annotated and non-annotated options for a field")
 	}
@@ -247,7 +247,7 @@ func (f FieldSpec) HasAnnotatedOptions(options ...string) FieldSpec {
 }
 
 // HasOptions returns a new FieldSpec that specifies a specific list of options.
-func (f FieldSpec) HasOptions(options ...string) FieldSpec {
+func (f *FieldSpec) HasOptions(options ...string) *FieldSpec {
 	if len(f.AnnotatedOptions) > 0 {
 		panic("cannot combine annotated and non-annotated options for a field")
 	}
@@ -256,7 +256,7 @@ func (f FieldSpec) HasOptions(options ...string) FieldSpec {
 }
 
 // WithChildren returns a new FieldSpec that has child fields.
-func (f FieldSpec) WithChildren(children ...FieldSpec) FieldSpec {
+func (f *FieldSpec) WithChildren(children ...*FieldSpec) *FieldSpec {
 	if len(f.Type) == 0 {
 		f.Type = FieldTypeObject
 	}
@@ -272,7 +272,7 @@ func (f FieldSpec) WithChildren(children ...FieldSpec) FieldSpec {
 // OmitWhen specifies a custom func that, when provided a generic config struct,
 // returns a boolean indicating when the field can be safely omitted from a
 // config.
-func (f FieldSpec) OmitWhen(fn func(field, parent any) (why string, shouldOmit bool)) FieldSpec {
+func (f *FieldSpec) OmitWhen(fn func(field, parent any) (why string, shouldOmit bool)) *FieldSpec {
 	f.omitWhenFn = fn
 	return f
 }
@@ -290,7 +290,7 @@ func (f FieldSpec) OmitWhen(fn func(field, parent any) (why string, shouldOmit b
 // Note that a linting rule defined this way will only be effective in the
 // binary that defines it as the function cannot be serialized into a portable
 // schema.
-func (f FieldSpec) LinterFunc(fn LintFunc) FieldSpec {
+func (f *FieldSpec) LinterFunc(fn LintFunc) *FieldSpec {
 	f.Linter = ""
 	f.customLintFn = fn
 	return f
@@ -331,7 +331,7 @@ func lintsFromAny(line int, v any) (lints []Lint) {
 // Note that a linting rule defined this way will only be effective in the
 // binary that defines it as the function cannot be serialized into a portable
 // schema.
-func (f FieldSpec) LinterBlobl(blobl string) FieldSpec {
+func (f *FieldSpec) LinterBlobl(blobl string) *FieldSpec {
 	env := bloblang.NewEnvironment().OnlyPure()
 
 	m, err := env.Parse(blobl)
@@ -362,7 +362,7 @@ func (f FieldSpec) LinterBlobl(blobl string) FieldSpec {
 // and returns a linting error if that is not the case. This is currently opt-in
 // because some fields express options that are only a subset due to deprecated
 // functionality.
-func (f FieldSpec) lintOptions() FieldSpec {
+func (f *FieldSpec) lintOptions() *FieldSpec {
 	var optionsBuilder, patternOptionsBuilder strings.Builder
 
 	_, _ = optionsBuilder.WriteString("{\n")
@@ -405,7 +405,7 @@ root = $value_parts.map_each(part -> if $options.exists(part) || part.apply("is_
 `, optionsBuilder.String(), patternOptionsBuilder.String()))
 }
 
-func (f FieldSpec) scrubValue(v any) (any, error) {
+func (f *FieldSpec) scrubValue(v any) (any, error) {
 	if f.Scrubber == "" {
 		return v, nil
 	}
@@ -427,7 +427,7 @@ func (f FieldSpec) scrubValue(v any) (any, error) {
 	return res, nil
 }
 
-func (f FieldSpec) getLintFunc() LintFunc {
+func (f *FieldSpec) getLintFunc() LintFunc {
 	fn := f.customLintFn
 	if fn == nil && len(f.Linter) > 0 {
 		fn = f.LinterBlobl(f.Linter).customLintFn
@@ -460,50 +460,50 @@ func (f FieldSpec) getLintFunc() LintFunc {
 }
 
 // FieldAnything returns a field spec for any typed field.
-func FieldAnything(name, description string, examples ...any) FieldSpec {
+func FieldAnything(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeUnknown)
 }
 
 // FieldObject returns a field spec for an object typed field.
-func FieldObject(name, description string, examples ...any) FieldSpec {
+func FieldObject(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeObject)
 }
 
 // FieldString returns a field spec for a common string typed field.
-func FieldString(name, description string, examples ...any) FieldSpec {
+func FieldString(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeString)
 }
 
 // FieldInterpolatedString returns a field spec for a string typed field
 // supporting dynamic interpolated functions.
-func FieldInterpolatedString(name, description string, examples ...any) FieldSpec {
+func FieldInterpolatedString(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeString).IsInterpolated()
 }
 
 // FieldBloblang returns a field spec for a string typed field containing a
 // Bloblang mapping.
-func FieldBloblang(name, description string, examples ...any) FieldSpec {
+func FieldBloblang(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeString).IsBloblang()
 }
 
 // FieldInt returns a field spec for a common int typed field.
-func FieldInt(name, description string, examples ...any) FieldSpec {
+func FieldInt(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeInt)
 }
 
 // FieldFloat returns a field spec for a common float typed field.
-func FieldFloat(name, description string, examples ...any) FieldSpec {
+func FieldFloat(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeFloat)
 }
 
 // FieldBool returns a field spec for a common bool typed field.
-func FieldBool(name, description string, examples ...any) FieldSpec {
+func FieldBool(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeBool)
 }
 
 // FieldURL returns a field spec for a string typed field containing a URL, both
 // linting rules and scrubbers are added.
-func FieldURL(name, description string, examples ...any) FieldSpec {
+func FieldURL(name, description string, examples ...any) *FieldSpec {
 	f := newField(name, description, examples...).HasType(FieldTypeString) /*.LinterBlobl(`
 	root = this.parse_url().(deleted()).catch(err -> err)
 	`)*/
@@ -517,47 +517,47 @@ root = if $pass != "" && !$pass.trim().re_match("""^%v$""") {
 }
 
 // FieldInput returns a field spec for an input typed field.
-func FieldInput(name, description string, examples ...any) FieldSpec {
+func FieldInput(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeInput)
 }
 
 // FieldProcessor returns a field spec for a processor typed field.
-func FieldProcessor(name, description string, examples ...any) FieldSpec {
+func FieldProcessor(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeProcessor)
 }
 
 // FieldOutput returns a field spec for an output typed field.
-func FieldOutput(name, description string, examples ...any) FieldSpec {
+func FieldOutput(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeOutput)
 }
 
 // FieldBuffer returns a field spec for a buffer typed field.
-func FieldBuffer(name, description string, examples ...any) FieldSpec {
+func FieldBuffer(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeBuffer)
 }
 
 // FieldCache returns a field spec for a cache typed field.
-func FieldCache(name, description string, examples ...any) FieldSpec {
+func FieldCache(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeCache)
 }
 
 // FieldRateLimit returns a field spec for a rate limit typed field.
-func FieldRateLimit(name, description string, examples ...any) FieldSpec {
+func FieldRateLimit(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeRateLimit)
 }
 
 // FieldMetrics returns a field spec for a metrics typed field.
-func FieldMetrics(name, description string, examples ...any) FieldSpec {
+func FieldMetrics(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeMetrics)
 }
 
 // FieldTracer returns a field spec for a tracer typed field.
-func FieldTracer(name, description string, examples ...any) FieldSpec {
+func FieldTracer(name, description string, examples ...any) *FieldSpec {
 	return newField(name, description, examples...).HasType(FieldTypeTracer)
 }
 
-func newField(name, description string, examples ...any) FieldSpec {
-	return FieldSpec{
+func newField(name, description string, examples ...any) *FieldSpec {
+	return &FieldSpec{
 		Name:        name,
 		Description: description,
 		Kind:        KindScalar,
@@ -566,8 +566,8 @@ func newField(name, description string, examples ...any) FieldSpec {
 }
 
 // FieldComponent returns a field spec for a component.
-func FieldComponent() FieldSpec {
-	return FieldSpec{
+func FieldComponent() *FieldSpec {
+	return &FieldSpec{
 		Kind: KindScalar,
 	}
 }
@@ -578,7 +578,7 @@ func FieldComponent() FieldSpec {
 // - Whether the field has a default value
 // - Whether the field was explicitly marked as optional
 // - Whether the field is an object with children, none of which are required.
-func (f FieldSpec) CheckRequired() bool {
+func (f *FieldSpec) CheckRequired() bool {
 	if f.IsOptional {
 		return false
 	}
@@ -601,7 +601,7 @@ func (f FieldSpec) CheckRequired() bool {
 //------------------------------------------------------------------------------
 
 // FieldSpecs is a slice of field specs for a component.
-type FieldSpecs []FieldSpec
+type FieldSpecs []*FieldSpec
 
 // Merge with another set of FieldSpecs.
 func (f FieldSpecs) Merge(specs FieldSpecs) FieldSpecs {
@@ -609,15 +609,15 @@ func (f FieldSpecs) Merge(specs FieldSpecs) FieldSpecs {
 }
 
 // Add more field specs.
-func (f FieldSpecs) Add(specs ...FieldSpec) FieldSpecs {
+func (f FieldSpecs) Add(specs ...*FieldSpec) FieldSpecs {
 	return append(f, specs...)
 }
 
 // FieldFilter defines a filter closure that returns a boolean for a component
 // field indicating whether the field should be kept within a generated config.
-type FieldFilter func(spec FieldSpec) bool
+type FieldFilter func(spec *FieldSpec) bool
 
-func (f FieldFilter) shouldDrop(spec FieldSpec) bool {
+func (f FieldFilter) shouldDrop(spec *FieldSpec) bool {
 	if f == nil {
 		return false
 	}
@@ -630,7 +630,7 @@ func ShouldDropDeprecated(b bool) FieldFilter {
 	if !b {
 		return nil
 	}
-	return func(spec FieldSpec) bool {
+	return func(spec *FieldSpec) bool {
 		return !spec.IsDeprecated
 	}
 }
@@ -767,7 +767,7 @@ func (l Lint) Error() string {
 
 //------------------------------------------------------------------------------
 
-func (f FieldSpec) needsDefault() bool {
+func (f *FieldSpec) needsDefault() bool {
 	if f.IsOptional {
 		return false
 	}
@@ -777,7 +777,7 @@ func (f FieldSpec) needsDefault() bool {
 	return true
 }
 
-func getDefault(pathName string, field FieldSpec) (any, error) {
+func getDefault(pathName string, field *FieldSpec) (any, error) {
 	if field.Default != nil {
 		// TODO: Should be deep copy here?
 		return *field.Default, nil

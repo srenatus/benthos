@@ -101,7 +101,7 @@ func (b BasicAuthConfig) WrapHandler(next http.HandlerFunc) http.HandlerFunc {
 }
 
 // BasicAuthFieldSpec returns the spec for an HTTP BasicAuth component.
-func BasicAuthFieldSpec() docs.FieldSpec {
+func BasicAuthFieldSpec() *docs.FieldSpec {
 	return docs.FieldObject("basic_auth", "Allows you to enforce and customise basic authentication for requests to the HTTP server.").WithChildren(
 		docs.FieldBool("enabled", "Enable basic authentication").HasDefault(false),
 		docs.FieldString("realm", "Custom realm name").HasDefault("restricted"),

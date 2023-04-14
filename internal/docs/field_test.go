@@ -71,7 +71,7 @@ func TestBloblLinter(t *testing.T) {
 func TestFieldLinting(t *testing.T) {
 	tests := []struct {
 		name   string
-		f      FieldSpec
+		f      *FieldSpec
 		input  any
 		output []Lint
 	}{
@@ -137,7 +137,7 @@ func TestFieldLinting(t *testing.T) {
 func TestSecretScrubbing(t *testing.T) {
 	tests := []struct {
 		name   string
-		f      FieldSpec
+		f      *FieldSpec
 		input  any
 		output any
 	}{

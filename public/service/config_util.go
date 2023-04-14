@@ -8,10 +8,10 @@ import (
 )
 
 type fieldUnwrapper struct {
-	child docs.FieldSpec
+	child *docs.FieldSpec
 }
 
-func (f fieldUnwrapper) Unwrap() docs.FieldSpec {
+func (f fieldUnwrapper) Unwrap() *docs.FieldSpec {
 	return f.child
 }
 

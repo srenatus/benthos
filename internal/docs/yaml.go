@@ -22,7 +22,7 @@ func FieldsFromYAML(node *yaml.Node) FieldSpecs {
 // FieldFromYAML infers a field spec from a YAML node. This mechanism has many
 // limitations and should only be used for pre-hydrating field specs for old
 // components with struct based config.
-func FieldFromYAML(name string, node *yaml.Node) FieldSpec {
+func FieldFromYAML(name string, node *yaml.Node) *FieldSpec {
 	node = unwrapDocumentNode(node)
 
 	field := newField(name, "")
@@ -146,7 +146,7 @@ func GetPluginConfigYAML(name string, node *yaml.Node) (yaml.Node, error) {
 
 //------------------------------------------------------------------------------
 
-func (f FieldSpec) shouldOmitYAML(parentFields FieldSpecs, fieldNode, parentNode *yaml.Node) (why string, shouldOmit bool) {
+func (f *FieldSpec) shouldOmitYAML(parentFields FieldSpecs, fieldNode, parentNode *yaml.Node) (why string, shouldOmit bool) {
 	conf := ToValueConfig{
 		Passive:             true,
 		FallbackToInterface: true,
@@ -274,7 +274,7 @@ func SanitiseYAML(cType Type, node *yaml.Node, conf SanitiseConfig) error {
 // SanitiseYAML attempts to reduce a parsed config (as a *yaml.Node) down into a
 // minimal representation without changing the behaviour of the config. The
 // fields of the result will also be sorted according to the field spec.
-func (f FieldSpec) SanitiseYAML(node *yaml.Node, conf SanitiseConfig) error {
+func (f *FieldSpec) SanitiseYAML(node *yaml.Node, conf SanitiseConfig) error {
 	node = unwrapDocumentNode(node)
 
 	if coreType, isCore := f.Type.IsCoreComponent(); isCore {
@@ -418,7 +418,7 @@ func (f FieldSpecs) SanitiseYAML(node *yaml.Node, conf SanitiseConfig) error {
 
 //------------------------------------------------------------------------------
 
-func lintYAMLFromOmit(parentSpec FieldSpecs, lintTargetSpec FieldSpec, parent, node *yaml.Node) []Lint {
+func lintYAMLFromOmit(parentSpec FieldSpecs, lintTargetSpec *FieldSpec, parent, node *yaml.Node) []Lint {
 	why, shouldOmit := lintTargetSpec.shouldOmitYAML(parentSpec, node, parent)
 	if shouldOmit {
 		return []Lint{NewLintError(node.Line, LintShouldOmit, why)}
@@ -426,7 +426,7 @@ func lintYAMLFromOmit(parentSpec FieldSpecs, lintTargetSpec FieldSpec, parent, n
 	return nil
 }
 
-func customLintFromYAML(ctx LintContext, spec FieldSpec, node *yaml.Node) []Lint {
+func customLintFromYAML(ctx LintContext, spec *FieldSpec, node *yaml.Node) []Lint {
 	lintFn := spec.getLintFunc()
 	if lintFn == nil {
 		return nil
@@ -534,7 +534,7 @@ func LintYAML(ctx LintContext, cType Type, node *yaml.Node) []Lint {
 
 // LintYAML returns a list of linting errors found by checking a field
 // definition against a yaml node.
-func (f FieldSpec) LintYAML(ctx LintContext, node *yaml.Node) []Lint {
+func (f *FieldSpec) LintYAML(ctx LintContext, node *yaml.Node) []Lint {
 	node = unwrapDocumentNode(node)
 
 	var lints []Lint
@@ -618,7 +618,7 @@ func (f FieldSpecs) LintYAML(ctx LintContext, node *yaml.Node) []Lint {
 		return lints
 	}
 
-	specNames := map[string]FieldSpec{}
+	specNames := map[string]*FieldSpec{}
 	for _, field := range f {
 		specNames[field.Name] = field
 	}
@@ -655,7 +655,7 @@ func (f FieldSpecs) LintYAML(ctx LintContext, node *yaml.Node) []Lint {
 // specified then it is used. Otherwise, a zero value is generated. If recurse
 // is enabled and the field has children then all children will also have values
 // generated.
-func (f FieldSpec) ToYAML(recurse bool) (*yaml.Node, error) {
+func (f *FieldSpec) ToYAML(recurse bool) (*yaml.Node, error) {
 	var node yaml.Node
 	if f.Default != nil {
 		if err := node.Encode(*f.Default); err != nil {
@@ -740,7 +740,7 @@ type ToValueConfig struct {
 
 // YAMLToValue converts a yaml node into a generic value by referencing the
 // expected type.
-func (f FieldSpec) YAMLToValue(node *yaml.Node, conf ToValueConfig) (any, error) {
+func (f *FieldSpec) YAMLToValue(node *yaml.Node, conf ToValueConfig) (any, error) {
 	node = unwrapDocumentNode(node)
 
 	switch f.Kind {
@@ -843,7 +843,7 @@ func (f FieldSpec) YAMLToValue(node *yaml.Node, conf ToValueConfig) (any, error)
 func (f FieldSpecs) YAMLToMap(node *yaml.Node, conf ToValueConfig) (map[string]any, error) {
 	node = unwrapDocumentNode(node)
 
-	pendingFieldsMap := map[string]FieldSpec{}
+	pendingFieldsMap := map[string]*FieldSpec{}
 	for _, field := range f {
 		pendingFieldsMap[field.Name] = field
 	}
@@ -931,7 +931,7 @@ func walkComponentsYAML(cType Type, node *yaml.Node, prov Provider, fn Component
 
 // WalkYAML walks each node of a YAML tree and for any component types within
 // the config a provided func is called.
-func (f FieldSpec) WalkYAML(node *yaml.Node, prov Provider, fn ComponentWalkYAMLFunc) error {
+func (f *FieldSpec) WalkYAML(node *yaml.Node, prov Provider, fn ComponentWalkYAMLFunc) error {
 	node = unwrapDocumentNode(node)
 
 	if coreType, isCore := f.Type.IsCoreComponent(); isCore {

@@ -16,7 +16,7 @@ func memoryBufferConfig() *service.ConfigSpec {
 	bs.Name = "batch_policy"
 	bs.Description = "Optionally configure a policy to flush buffered messages in batches."
 	bs.Examples = nil
-	newChildren := []docs.FieldSpec{
+	newChildren := []*docs.FieldSpec{
 		docs.FieldBool("enabled", "Whether to batch messages as they are flushed.").HasDefault(false),
 	}
 	for _, f := range bs.Children {

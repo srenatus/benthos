@@ -17,7 +17,7 @@ import (
 func NewTLSField(name string) *ConfigField {
 	tf := btls.FieldSpec()
 	tf.Name = name
-	var newChildren []docs.FieldSpec
+	var newChildren []*docs.FieldSpec
 	for _, f := range tf.Children {
 		if f.Name != "enabled" {
 			newChildren = append(newChildren, f)

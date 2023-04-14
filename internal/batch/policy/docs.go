@@ -3,8 +3,8 @@ package policy
 import "github.com/benthosdev/benthos/v4/internal/docs"
 
 // FieldSpec returns a spec for a common batching field.
-func FieldSpec() docs.FieldSpec {
-	return docs.FieldSpec{
+func FieldSpec() *docs.FieldSpec {
+	return &docs.FieldSpec{
 		Name: "batching",
 		Type: docs.FieldTypeObject,
 		Description: `

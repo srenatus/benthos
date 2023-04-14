@@ -9,7 +9,7 @@ import (
 // FieldSpecCtx provides a field spec and rendered extras for documentation
 // templates to use.
 type FieldSpecCtx struct {
-	Spec FieldSpec
+	Spec *FieldSpec
 
 	// FullName describes the full dot path name of the field relative to
 	// the root of the documented component.
@@ -74,7 +74,7 @@ Type: {{if eq $field.Spec.Kind "array"}}list of {{end}}{{if eq $field.Spec.Kind 
 // FlattenChildrenForDocs converts the children of a field into a flat list,
 // where the names contain hints as to their position in a structured hierarchy.
 // This makes it easier to list the fields in documentation.
-func (f FieldSpec) FlattenChildrenForDocs() []FieldSpecCtx {
+func (f *FieldSpec) FlattenChildrenForDocs() []FieldSpecCtx {
 	flattenedFields := []FieldSpecCtx{}
 	var walkFields func(path string, f FieldSpecs)
 	walkFields = func(path string, f FieldSpecs) {

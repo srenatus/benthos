@@ -108,7 +108,7 @@ func NewBatchPolicyField(name string) *ConfigField {
 	bs := policy.FieldSpec()
 	bs.Name = name
 	bs.Type = docs.FieldTypeObject
-	var newChildren []docs.FieldSpec
+	var newChildren []*docs.FieldSpec
 	for _, f := range bs.Children {
 		if f.Name == "count" {
 			f = f.HasDefault(0)

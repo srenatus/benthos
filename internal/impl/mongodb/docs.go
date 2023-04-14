@@ -6,12 +6,12 @@ import (
 	"github.com/benthosdev/benthos/v4/public/service"
 )
 
-func processorOperationDocs(defaultOperation client.Operation) docs.FieldSpec {
+func processorOperationDocs(defaultOperation client.Operation) *docs.FieldSpec {
 	fs := outputOperationDocs(defaultOperation)
 	return fs.HasOptions(append(fs.Options, string(client.OperationFindOne))...)
 }
 
-func outputOperationDocs(defaultOperation client.Operation) docs.FieldSpec {
+func outputOperationDocs(defaultOperation client.Operation) *docs.FieldSpec {
 	return docs.FieldString(
 		"operation",
 		"The mongodb operation to perform.",

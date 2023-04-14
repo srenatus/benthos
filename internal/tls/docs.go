@@ -3,7 +3,7 @@ package tls
 import "github.com/benthosdev/benthos/v4/internal/docs"
 
 // FieldSpec returns a spec for a common TLS field.
-func FieldSpec() docs.FieldSpec {
+func FieldSpec() *docs.FieldSpec {
 	return docs.FieldObject(
 		"tls", "Custom TLS settings can be used to override system defaults.",
 	).WithChildren(

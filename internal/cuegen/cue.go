@@ -82,7 +82,7 @@ func doFieldSpecs(s docs.FieldSpecs) ([]any, error) {
 	return fields, nil
 }
 
-func doFieldSpec(spec docs.FieldSpec) (*ast.Field, error) {
+func doFieldSpec(spec *docs.FieldSpec) (*ast.Field, error) {
 	switch spec.Kind {
 	case "":
 		return doScalarField(spec)
@@ -117,7 +117,7 @@ func doFieldSpec(spec docs.FieldSpec) (*ast.Field, error) {
 	}
 }
 
-func doScalarField(spec docs.FieldSpec) (*ast.Field, error) {
+func doScalarField(spec *docs.FieldSpec) (*ast.Field, error) {
 	label := ast.NewIdent(spec.Name)
 	optionalMark := token.Blank.Pos()
 
