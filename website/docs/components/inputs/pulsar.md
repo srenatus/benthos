@@ -40,6 +40,7 @@ input:
     topics_pattern: "" # No default (optional)
     subscription_name: "" # No default (required)
     subscription_type: shared
+    subscription_initial_position: latest
     tls:
       root_cas_file: ""
 ```
@@ -57,6 +58,7 @@ input:
     topics_pattern: "" # No default (optional)
     subscription_name: "" # No default (required)
     subscription_type: shared
+    subscription_initial_position: latest
     tls:
       root_cas_file: ""
     auth:
@@ -143,6 +145,15 @@ Specify the subscription type for this consumer.
 Type: `string`  
 Default: `"shared"`  
 Options: `shared`, `key_shared`, `failover`, `exclusive`.
+
+### `subscription_initial_position`
+
+Specify the subscription initial position for this consumer.
+
+
+Type: `string`  
+Default: `"latest"`  
+Options: `latest`, `earliest`.
 
 ### `tls`
 
