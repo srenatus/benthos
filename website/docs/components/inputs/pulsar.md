@@ -66,6 +66,7 @@ input:
         enabled: false
         audience: ""
         issuer_url: ""
+        scope: ""
         private_key_file: ""
       token:
         enabled: false
@@ -210,6 +211,14 @@ Default: `""`
 ### `auth.oauth2.issuer_url`
 
 OAuth2 issuer URL.
+
+
+Type: `string`  
+Default: `""`  
+
+### `auth.oauth2.scope`
+
+OAuth2 scope to request.
 
 
 Type: `string`  
